@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  writerapp:
+    container_name: writerapp
+    environment:
+      - MONGODB_HOST=host.docker.internal
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
