@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,8 @@ public class BookService {
     }
 
     public Book addBook(Book book) {
+        book.setCreatedDate(new Date());
+        book.setLastModified(new Date());
         return bookRepository.save(book);
     }
 
@@ -39,7 +42,7 @@ public class BookService {
                 existingBook.setBookName(updatedBook.getBookName());
             if(StringUtils.isEmpty(updatedBook.getAuthor()))
                 existingBook.setAuthor(updatedBook.getAuthor());
-            if(updatedBook.getChapters()>=0)
+            if(updatedBook.getChapterCount()>=0)
                 existingBook.setChapters(updatedBook.getChapters());
             existingBook.setLastModified(new Date());
             return bookRepository.save(existingBook);
@@ -55,5 +58,15 @@ public class BookService {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Book with id "+ id + "Not found");
         }
+    }
+    public void addChapterToBook(String chapterId,String BookId){
+        Optional<Book> bookOptional = bookRepository.findById(BookId);
+        bookOptional.ifPresent(book->{
+            List<String> chapters = book.getChapters();
+            if(chapters==null) chapters = new ArrayList<>();
+            chapters.add(chapterId);
+            book.setChapters(chapters);
+            bookRepository.save(book);
+        });
     }
 }

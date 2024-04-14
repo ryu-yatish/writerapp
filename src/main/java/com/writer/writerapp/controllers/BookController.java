@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/Book")
@@ -15,9 +16,14 @@ public class BookController {
 
     private final BookService bookService;
 
-    @GetMapping("/getAll")
+    @GetMapping("/all")
     public List<Book> getAllBooks() {
         return bookService.getAllBooks();
+    }
+
+    @GetMapping("/getById/{id}")
+    public Optional<Book> getBookById(@PathVariable String id) {
+        return bookService.getBookById(id);
     }
 
     @PostMapping("/add")
@@ -26,12 +32,12 @@ public class BookController {
         return bookService.addBook(book);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Book updateBook(@PathVariable String id, @RequestBody Book updatedBook) {
         return bookService.updateBook(id, updatedBook);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable String id) {
         bookService.deleteBook(id);
