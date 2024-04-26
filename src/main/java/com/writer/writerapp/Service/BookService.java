@@ -38,9 +38,9 @@ public class BookService {
         Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isPresent()) {
             Book existingBook = optionalBook.get();
-            if(StringUtils.isEmpty(updatedBook.getBookName()))
+            if(!StringUtils.isEmpty(updatedBook.getBookName()))
                 existingBook.setBookName(updatedBook.getBookName());
-            if(StringUtils.isEmpty(updatedBook.getAuthor()))
+            if(!StringUtils.isEmpty(updatedBook.getAuthor()))
                 existingBook.setAuthor(updatedBook.getAuthor());
             if(updatedBook.getChapterCount()>=0)
                 existingBook.setChapters(updatedBook.getChapters());
