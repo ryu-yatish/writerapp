@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class EmbeddingsController {
     private final EmbeddingService embeddingService;
 
-    @GetMapping("/askGpt/{bookId}")
+    @PostMapping("/askGpt/{bookId}")
     @ResponseStatus(HttpStatus.OK)
     public String askChatGpt(@PathVariable String bookId,@RequestBody String question) throws Exception {
         return embeddingService.askGpt(question);
