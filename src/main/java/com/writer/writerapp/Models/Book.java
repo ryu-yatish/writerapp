@@ -38,4 +38,8 @@ public class Book {
 
     @Field("last_modified")
     private Date lastModified;
+
+    @Field("embedding_ids")
+    private String[] embeddingIds;
+
 }

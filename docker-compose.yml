@@ -9,3 +9,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    secrets:
+      - open_ai_api_key
+secrets:
+  open_ai_api_key:
+    file: ../openai_api_key.txt
