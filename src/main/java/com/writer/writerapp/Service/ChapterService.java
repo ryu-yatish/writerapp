@@ -4,8 +4,12 @@ import com.writer.writerapp.Models.Chapter;
 import com.writer.writerapp.Repositories.ChapterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -48,5 +52,25 @@ public class ChapterService {
 
     public void deleteChapter(String id) {
         chapterRepository.deleteById(id);
+    }
+
+    public List<String> getMicroContentsList(String chapterId){
+        Optional<Chapter> chapterOptional = chapterRepository.findById(chapterId);
+        List<String> microContentList= new ArrayList<>();
+        StringBuilder currentContentBuffer= new StringBuilder();
+
+        chapterOptional.ifPresent(chapter -> {
+            Document doc = Jsoup.parse(chapter.getContent());
+            for (Element paragraph : doc.select("p")) {
+                if(currentContentBuffer.length()<2000){
+                    currentContentBuffer.append(paragraph.text());
+                }else {
+                    microContentList.add(currentContentBuffer.toString());
+                    currentContentBuffer.setLength(0);
+                }
+            }
+            microContentList.add(currentContentBuffer.toString());
+        });
+        return microContentList;
     }
 }

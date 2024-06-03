@@ -66,6 +66,7 @@ public class BookService {
             if(chapters==null) chapters = new ArrayList<>();
             chapters.add(chapterId);
             book.setChapters(chapters);
+            book.setChapterCount(chapters.size());
             bookRepository.save(book);
         });
     }
