@@ -30,4 +30,9 @@ public class Chapter {
     @Field("last_modified")
     private Date lastModified;
 
+    @Field("book_id")
+    private String bookId;
+
+    @Field("last_analyzed")
+    private Date lastAnalyzed;
 }

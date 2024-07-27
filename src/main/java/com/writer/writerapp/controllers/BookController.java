@@ -1,6 +1,7 @@
 package com.writer.writerapp.controllers;
 
 import com.writer.writerapp.Models.Book;
+import com.writer.writerapp.Models.ResponseVO.BookResponseVO;
 import com.writer.writerapp.Service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,8 @@ public class BookController {
     }
 
     @GetMapping("/getById/{id}")
-    public Optional<Book> getBookById(@PathVariable String id) {
-        return bookService.getBookById(id);
+    public BookResponseVO getBookById(@PathVariable String id) {
+        return bookService.getBookResponseVOById(id);
     }
 
     @PostMapping("/add")

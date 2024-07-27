@@ -1,10 +1,10 @@
 package com.writer.writerapp.Models;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Arrays;
 import java.util.Date;
 
 @Getter
@@ -19,7 +19,7 @@ public class Embedding {
     private String id;
 
     @Field("vector")
-    private float[] vector;
+    private double[] vector;
 
     @Field("data_string")
     private String dataString;
@@ -35,4 +35,9 @@ public class Embedding {
 
     @Field("chapter_id")
     private String chapterId;
+
+    @Field("book_id")
+    private String bookId;
+
+
 }
