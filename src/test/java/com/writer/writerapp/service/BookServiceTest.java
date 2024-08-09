@@ -29,6 +29,8 @@ public class BookServiceTest {
     @InjectMocks
     private BookService bookService;
 
+    String token="Bearer jwtToken";
+
     @BeforeEach
     public void setUp() {
     }
@@ -38,7 +40,7 @@ public class BookServiceTest {
         List<Book> books = new ArrayList<>();
         when(bookRepository.findAll()).thenReturn(books);
 
-        List<Book> result = bookService.getAllBooks();
+        List<Book> result = bookService.getAllBooks(token);
 
         assertEquals(books, result);
     }
@@ -54,7 +56,7 @@ public class BookServiceTest {
         when(bookRepository.save(any(Book.class))).thenReturn(book);
 
         // Calling the service method
-        Book result = bookService.addBook(book);
+        Book result = bookService.addBook(book,token);
 
         // Verifying the result
         assertEquals(book, result);

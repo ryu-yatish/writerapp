@@ -24,6 +24,9 @@ public class Book {
     @Id
     private String id;
 
+    @Field("user_id")
+    private String userId;
+
     @Field("book_name")
     private String bookName;
 

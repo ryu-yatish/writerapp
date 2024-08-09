@@ -6,9 +6,12 @@ import com.writer.writerapp.Models.DynamicDbSchema;
 import com.writer.writerapp.Models.ResponseVO.BookResponseVO;
 import com.writer.writerapp.Repositories.BookRepository;
 import io.micrometer.common.util.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,13 +26,17 @@ import java.util.Optional;
 public class BookService {
     private final BookRepository bookRepository;
     private final ChapterService chapterService;
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    private final JwtDecoder jwtDecoder;
+    public List<Book> getAllBooks(String token) {
+        String userId = getUserIDFromPrinciple(token);
+        return bookRepository.findByUserId(userId);
     }
 
-    public Book addBook(Book book) {
+    public Book addBook(Book book,String token) {
+        String userId = getUserIDFromPrinciple(token);
         book.setCreatedDate(new Date());
         book.setLastModified(new Date());
+        book.setUserId(userId);
         return bookRepository.save(book);
     }
 
@@ -130,5 +137,12 @@ public class BookService {
             book.setChapterCount(chapters.size());
             bookRepository.save(book);
         });
+    }
+    public String getUserIDFromPrinciple(String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            Jwt decodedJwt = jwtDecoder.decode(token.substring(7));
+            return decodedJwt.getSubject();
+        }
+        return "";
     }
 }
