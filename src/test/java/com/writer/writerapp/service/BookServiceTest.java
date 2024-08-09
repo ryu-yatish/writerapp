@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +27,18 @@ public class BookServiceTest {
 
     @Mock
     private BookRepository bookRepository;
+    @Mock
+    private JwtDecoder jwtDecoder;
 
     @InjectMocks
     private BookService bookService;
 
-    String token="Bearer jwtToken";
-
+    String token="jwtToken";
+    Jwt mockJwt = Jwt.withTokenValue(token)
+            .claim("sub", "user123")
+            .claim("roles", "ROLE_USER")
+            .header("none","none")
+            .build();
     @BeforeEach
     public void setUp() {
     }
@@ -39,7 +47,7 @@ public class BookServiceTest {
     public void testGetAllBooks() {
         List<Book> books = new ArrayList<>();
         when(bookRepository.findAll()).thenReturn(books);
-
+        when(jwtDecoder.decode(token.substring(7))).thenReturn(mockJwt);
         List<Book> result = bookService.getAllBooks(token);
 
         assertEquals(books, result);
@@ -54,7 +62,7 @@ public class BookServiceTest {
 
         // Mocking repository behavior
         when(bookRepository.save(any(Book.class))).thenReturn(book);
-
+        when(jwtDecoder.decode(token.substring(7))).thenReturn(mockJwt);
         // Calling the service method
         Book result = bookService.addBook(book,token);
 

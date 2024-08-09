@@ -3,6 +3,7 @@ package com.writer.writerapp.Service;
 
 import com.writer.writerapp.Models.ResponseVO.AuthenticationResponse;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
@@ -18,12 +19,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CognitoService {
     @Value("aws.cognito.clientId")
-    private final String clientId;
+    private String clientId;
     @Value("aws.cognito.clientSecret")
-    private final String clientSecret;
+    private String clientSecret;
     private final Region region = Region.US_EAST_1;
 
     private CognitoIdentityProviderClient getClient() {
