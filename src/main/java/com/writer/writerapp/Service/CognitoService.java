@@ -21,9 +21,9 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class CognitoService {
-    @Value("aws.cognito.clientId")
+    @Value("${aws.cognito.clientId}")
     private String clientId;
-    @Value("aws.cognito.clientSecret")
+    @Value("${aws.cognito.clientSecret}")
     private String clientSecret;
     private final Region region = Region.US_EAST_1;
 
