@@ -71,7 +71,7 @@ public class ApiService {
         embeddingList.parallelStream().forEach(embedding -> {
             EmbeddingData.updateAndGet(currentStr->currentStr+"\n"+ embedding.getDataString());
         });
-        String systemMessageString = "this is an api to analyze and answer questions from a book writing app. given below with system roles are select paragraphs selected using embeddings. based on that data in it please answer the following questions";
+        String systemMessageString = "this is an api to analyze and answer questions from a book writing app. given below with system roles are select paragraphs selected using embeddings. based on that data in it please answer the following questions and whenever possible provide information that might inspire new ideas and provide more information helpful in writing the book further";
         Message systemMessage = new Message("system", systemMessageString);
         Message embeddingMessage = new Message("system", EmbeddingData.get());
         Message userMessage = new Message("user", userMessageStr);
