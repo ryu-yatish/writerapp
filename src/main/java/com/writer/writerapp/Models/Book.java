@@ -20,7 +20,7 @@ import java.util.List;
 @Builder
 @Document("Book")
 @JsonIgnoreProperties
-public class Book {
+public class Book extends BaseEntity{
     @Id
     private String id;
 

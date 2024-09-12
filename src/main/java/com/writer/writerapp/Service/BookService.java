@@ -29,7 +29,7 @@ public class BookService {
     private final JwtDecoder jwtDecoder;
     public List<Book> getAllBooks(String token) {
         String userId = getUserIDFromPrinciple(token);
-        return bookRepository.findByUserId(userId);
+        return bookRepository.findByUserIdAndDeletedIsFalse(userId);
     }
 
     public Book addBook(Book book,String token) {
@@ -41,38 +41,38 @@ public class BookService {
     }
 
     public Optional<Book> getBookById(String id) {
-        return bookRepository.findById(id);
+        return bookRepository.findByIdAndDeletedIsFalse(id);
     }
 
     public void updateLastAnalyzed(String id) {
-        Optional<Book> bookOptional = bookRepository.findById(id);
+        Optional<Book> bookOptional = bookRepository.findByIdAndDeletedIsFalse(id);
         bookOptional.ifPresent(book ->{
             book.setLastAnalyzed(new Date());
             bookRepository.save(book);
         } );
     }
     public void addDDSSchema(DynamicDbSchema schema, String bookId) {
-        Optional<Book> book = bookRepository.findById(bookId);
+        Optional<Book> book = bookRepository.findByIdAndDeletedIsFalse(bookId);
         if (book.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         book.get().addDynamicDbSchema(schema);
         bookRepository.save(book.get());
     }
 
     public void updateDDSSchema(String bookId, String schemaId, DynamicDbSchema updatedSchema) {
-        Optional<Book> book = bookRepository.findById(bookId);
+        Optional<Book> book = bookRepository.findByIdAndDeletedIsFalse(bookId);
         if (book.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         book.get().updateDynamicDbSchema(schemaId, updatedSchema);
         bookRepository.save(book.get());
     }
 
     public void deleteDDSSchema(String bookId, String schemaId) {
-        Optional<Book> book = bookRepository.findById(bookId);
+        Optional<Book> book = bookRepository.findByIdAndDeletedIsFalse(bookId);
         if (book.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         book.get().deleteDynamicDbSchema(schemaId);
         bookRepository.save(book.get());
     }
     public BookResponseVO getBookResponseVOById(String id) {
-        Optional<Book> bookOptional = bookRepository.findById(id);
+        Optional<Book> bookOptional = bookRepository.findByIdAndDeletedIsFalse(id);
         if(bookOptional.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         Book book = bookOptional.get();
         BookResponseVO bookResponseVO = BookResponseVO.builder()
@@ -94,7 +94,7 @@ public class BookService {
     }
 
     public Book updateBook(String id, Book updatedBook) {
-        Optional<Book> optionalBook = bookRepository.findById(id);
+        Optional<Book> optionalBook = bookRepository.findByIdAndDeletedIsFalse(id);
         if (optionalBook.isPresent()) {
             Book existingBook = optionalBook.get();
             if(!StringUtils.isEmpty(updatedBook.getBookName()))
@@ -109,15 +109,17 @@ public class BookService {
     }
 
     public void deleteBook(String id) {
-        Optional<Book> optionalBook = bookRepository.findById(id);
+        Optional<Book> optionalBook = bookRepository.findByIdAndDeletedIsFalse(id);
         if (optionalBook.isPresent()) {
-            bookRepository.deleteById(id);
+            Book book = optionalBook.get();
+            book.setDeleted(true);
+            bookRepository.save(book);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Book with id "+ id + "Not found");
         }
     }
     public void addChapterToBook(String chapterId,String BookId){
-        Optional<Book> bookOptional = bookRepository.findById(BookId);
+        Optional<Book> bookOptional = bookRepository.findByIdAndDeletedIsFalse(BookId);
         bookOptional.ifPresent(book->{
             List<String> chapters = book.getChapters();
             if(chapters==null) chapters = new ArrayList<>();
@@ -129,7 +131,7 @@ public class BookService {
     }
 
     public void deleteChapterFromBook(String chapterId,String BookId){
-        Optional<Book> bookOptional = bookRepository.findById(BookId);
+        Optional<Book> bookOptional = bookRepository.findByIdAndDeletedIsFalse(BookId);
         bookOptional.ifPresent(book->{
             List<String> chapters = book.getChapters();
             chapters.remove(chapterId);

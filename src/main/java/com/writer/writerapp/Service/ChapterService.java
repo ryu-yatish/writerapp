@@ -23,7 +23,7 @@ import java.util.Optional;
 public class ChapterService {
     private final ChapterRepository chapterRepository;
     public List<Chapter> getAllChapters() {
-        return chapterRepository.findAll();
+        return chapterRepository.findAllByDeletedIsFalse();
     }
 
     public Chapter addChapter(ChapterRequestVO chapterRequestVO, String BookId) {
@@ -38,11 +38,11 @@ public class ChapterService {
     }
 
     public Optional<Chapter> getChapterById(String id) {
-        return chapterRepository.findById(id);
+        return chapterRepository.findByIdAndDeletedIsFalse(id);
     }
 
     public Chapter updateChapter(String id, ChapterRequestVO updatedChapter) {
-        Optional<Chapter> optionalChapter = chapterRepository.findById(id);
+        Optional<Chapter> optionalChapter = chapterRepository.findByIdAndDeletedIsFalse(id);
         if (optionalChapter.isPresent()) {
             Chapter existingChapter = optionalChapter.get();
             existingChapter.setTitle(StringUtils.isEmpty(updatedChapter.getTitle())? existingChapter.getTitle() : updatedChapter.getTitle());
@@ -56,17 +56,19 @@ public class ChapterService {
     }
 
     public String deleteChapter(String id) {
-        Optional<Chapter> optionalChapter = chapterRepository.findById(id);
+        Optional<Chapter> optionalChapter = chapterRepository.findByIdAndDeletedIsFalse(id);
         String bookId = null;
         if (optionalChapter.isPresent()) {
-            bookId = optionalChapter.get().getBookId();
-            chapterRepository.deleteById(id);
+            Chapter ch =optionalChapter.get();
+            bookId = ch.getBookId();
+            ch.setDeleted(true);
+            chapterRepository.save(ch);
         }
         return bookId;
     }
 
     public List<String> getMicroContentsList(String chapterId){
-        Optional<Chapter> chapterOptional = chapterRepository.findById(chapterId);
+        Optional<Chapter> chapterOptional = chapterRepository.findByIdAndDeletedIsFalse(chapterId);
         List<String> microContentList= new ArrayList<>();
         StringBuilder currentContentBuffer= new StringBuilder();
 

@@ -15,7 +15,7 @@ import java.util.Map;
 @ToString
 @Builder
 @Document("DynamicDbObject")
-public class DynamicDbObject {
+public class DynamicDbObject extends BaseEntity {
     @Id
     private String id;
 

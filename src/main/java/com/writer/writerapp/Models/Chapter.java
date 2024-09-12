@@ -14,7 +14,7 @@ import java.util.Date;
 @ToString
 @Builder
 @Document("Chapter")
-public class Chapter {
+public class Chapter extends BaseEntity{
     @Id
     private String id;
 
