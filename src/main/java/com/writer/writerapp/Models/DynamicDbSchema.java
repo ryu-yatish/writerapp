@@ -22,8 +22,6 @@ public class DynamicDbSchema {
     @Field("name")
     private String name;
 
-    @Field("icon")
-    private String icon;
 
     @Field("properties_map")
     private Map<String,DDSProperty> propertiesMap;

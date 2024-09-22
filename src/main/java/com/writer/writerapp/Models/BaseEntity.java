@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Builder
 @JsonIgnoreProperties
 public class BaseEntity {
     @Field("deleted")
