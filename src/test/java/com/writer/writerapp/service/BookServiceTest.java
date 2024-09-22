@@ -79,7 +79,7 @@ public class BookServiceTest {
         book.setAuthor("Test Author");
 
         // Mocking repository behavior
-        when(bookRepository.findById("1")).thenReturn(Optional.of(book));
+        when(bookRepository.findByIdAndDeletedIsFalse("1")).thenReturn(Optional.of(book));
 
         // Calling the service method
         Optional<Book> result = bookService.getBookById("1");
@@ -101,7 +101,7 @@ public class BookServiceTest {
         updatedBook.setBookName("Updated Book Name");
         updatedBook.setAuthor("Updated Author");
         // Mocking repository behavior
-        when(bookRepository.findById("1")).thenReturn(Optional.of(book));
+        when(bookRepository.findByIdAndDeletedIsFalse("1")).thenReturn(Optional.of(book));
         when(bookRepository.save(any(Book.class))).thenReturn(updatedBook);
         Book result = bookService.updateBook("1", updatedBook);
 
@@ -113,13 +113,13 @@ public class BookServiceTest {
     @Test
     public void testDeleteBook() {
         // Mocking repository behavior
-        when(bookRepository.findById("1")).thenReturn(Optional.ofNullable(Book.builder().build()));
-        doNothing().when(bookRepository).deleteById("1");
+        when(bookRepository.findByIdAndDeletedIsFalse("1")).thenReturn(Optional.ofNullable(Book.builder().id("1").build()));
+        when(bookRepository.save(any(Book.class))).thenReturn(Book.builder().id("1").build());
         // Calling the service method
         bookService.deleteBook("1");
 
         // Verifying the method call
-        verify(bookRepository, times(1)).deleteById("1");
+        verify(bookRepository, times(1)).save(any(Book.class));
     }
 
     @Test
